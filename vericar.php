@@ -2,20 +2,18 @@
 
 /**
  * 
- * Plugin Name: UpxForms
- * Description: A WordPress Google Sheets Leads Forms Plugin
+ * Plugin Name: API Vericar
+ * Description: Gerenciamento de Chaves e Views da API Vericar
  * Version: 1.0
  * Author: Microframeworks
- * Author URI: https://microframeworks.com/web/
- * License: MIT
+ * Author URI: https://microframeworks.com
+ * License: Proprietary
  *
  */
 
 defined('ABSPATH') || exit;
 
 if (empty($_SERVER['HTTP_HOST'])) return;
-
-return;
 
 # Constants
 define('VERICAR_PATH', 	plugin_dir_path(__FILE__));
