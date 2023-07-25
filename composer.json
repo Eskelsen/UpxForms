@@ -1,0 +1,19 @@
+{
+    "name": "eskelsen/upxforms",
+    "description": "A WordPress Google Sheets Leads Forms Plugin",
+    "type": "wordpress-plugin",
+    "license": "MiT",
+    "autoload": {
+        "psr-4": {
+            "Eskelsen\\Upxforms\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Daniel Eskelsen",
+            "email": "eskelsen@yahoo.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
