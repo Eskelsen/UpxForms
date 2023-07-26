@@ -95,6 +95,14 @@ function upxforms_api_route() {
 
 // add_action( 'rest_api_init', 'upxforms_api_route' );
 
+# Uninstall
+
+function uninstall_upxforms(){
+	delete_options('upxforms_api_settings');
+}
+
+register_uninstall_hook(__FILE__, 'uninstall_upxforms');
+
 # Process Core
 function upxforms_verify_content($in){
 	if (strpos($in, 'upxforms_search')!==false) {
@@ -111,6 +119,9 @@ function upxforms_verify_content($in){
 }
 
 add_filter('the_content', 'upxforms_verify_content');
+
+
+upxforms_api_settings
 
 # Vericar Toolkit
 function upxformsToolkitCode(){
