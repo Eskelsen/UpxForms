@@ -15,147 +15,140 @@ defined('ABSPATH') || exit;
 
 if (empty($_SERVER['HTTP_HOST'])) return;
 
-return;
-
 # Constants
-define('VERICAR_PATH', 	plugin_dir_path(__FILE__));
-define('VERICAR_INC', 	VERICAR_PATH . 'inc/');
-define('VERICAR_DOCS', 	VERICAR_PATH . 'logs/');
-define('VERICAR_URL', 	plugin_dir_url(__FILE__));
-define('VERICAR_API', 	VERICAR_URL  . 'api/');
+define('UPXFORMS_PATH',	plugin_dir_path(__FILE__));
+define('UPXFORMS_INC', 	UPXFORMS_PATH . 'inc/');
+define('UPXFORMS_DOCS',	UPXFORMS_PATH . 'logs/');
+define('UPXFORMS_URL', 	plugin_dir_url(__FILE__));
+define('UPXFORMS_API', 	UPXFORMS_URL  . 'api/');
 
 # Logs & Debug
-$options = get_option('vericar_api_settings');
+$options = get_option('upxforms_api_settings');
 $logs = empty($options['logs']) ? false : ($options['logs']=='yes');
-define('VERICAR_LOGS_ON', $logs);
-include VERICAR_INC . 'logs.php';
+define('UPXFORMS_LOGS_ON', $logs);
+include UPXFORMS_INC . 'logs.php';
 
 # Vericar Logs File
-define('VERICAR_LOG', VERICAR_DOCS . 'logs.txt');
+define('UPXFORMS_LOG', UPXFORMS_DOCS . 'logs.txt');
 
 # Update Settings
-function vericar_settings_saved() {
+function upxforms_settings_saved() {
 	echo 
 	'<div class="notice notice-success is-dismissible">
 		<p><strong>Suas configurações foram salvas.</strong></p>
 	</div>';
 }
 
-if (!empty($_POST['vericar_email'])) {
+if (!empty($_POST['upxforms_email'])) {
 	
-	$options['email'] 		= $_POST['vericar_email'] 		?? '';
-	$options['pswd']  		= $_POST['vericar_pswd'] 		?? '';
-	$options['token'] 		= $_POST['vericar_token'] 		?? '';
-	$options['logs']  		= empty($_POST['vericar_logs']) ? 'no' : 'yes';
-	$options['search'] 		= $_POST['vericar_search'] 		?? '';
-	$options['result'] 		= $_POST['vericar_result'] 		?? '';
+	$options['email'] 		= $_POST['upxforms_email'] 			?? '';
+	$options['pswd']  		= $_POST['upxforms_pswd'] 			?? '';
+	$options['token'] 		= $_POST['upxforms_token'] 			?? '';
+	$options['logs']  		= empty($_POST['upxforms_logs']) ? 'no' : 'yes';
+	$options['search'] 		= $_POST['upxforms_search'] 		?? '';
+	$options['result'] 		= $_POST['upxforms_result'] 		?? '';
 	
-	update_option('vericar_api_settings', array_filter($options));
+	update_option('upxforms_api_settings', array_filter($options));
 	
-	add_action('admin_notices', 'vericar_settings_saved');
+	add_action('admin_notices', 'upxforms_settings_saved');
 }
 
 # Style
-function vericar_style() {
-	wp_enqueue_style('vericar-style', plugin_dir_url(__FILE__) . 'vericar-style.css', array(), '2.0');
+function upxforms_style() {
+	wp_enqueue_style('upxforms-style', plugin_dir_url(__FILE__) . 'upxforms-style.css', array(), '2.0');
 }
 
-add_action('admin_enqueue_scripts', 'vericar_style');
+add_action('admin_enqueue_scripts', 'upxforms_style');
 
 # Menu
-function wpdocs_add_my_custom_menu() {
+function upxforms_menu() {
 	// Add an item to the menu.
 	add_menu_page(
-		'Gerenciar API Vericar',
-		'API Vericar',
+		'Gerenciar API UpxForms',
+		'API UpxForms',
 		'manage_options',
-		'vericar-settings',
-		'vericar_settings',
+		'upxforms-settings',
+		'upxforms_settings',
 		'dashicons-admin-network'
 	);
 }
 
-add_action('admin_menu', 'wpdocs_add_my_custom_menu');
+add_action('admin_menu', 'upxforms_menu');
 
 # Settings
-function vericar_settings(){
-	include VERICAR_INC . 'settings.php';
+function upxforms_settings(){
+	include UPXFORMS_INC . 'settings.php';
 }
 
-# API REST wp-json /wp-json/vericar/v1/consulta
-function vericar_api_inc() {
-    include VERICAR_INC . 'api.php';
+# API REST wp-json /wp-json/upxforms/v1/consulta
+function upxforms_api_inc() {
+    include UPXFORMS_INC . 'api.php';
 }
 
-function vericar_api_route() {
-    register_rest_route( 'vericar/v1', '/consulta', array(
+function upxforms_api_route() {
+    register_rest_route( 'upxforms/v1', '/consulta', array(
         'methods'  => WP_REST_Server::READABLE,
-        'callback' => 'vericar_api_inc',
+        'callback' => 'upxforms_api_inc',
 		'permission_callback' => '__return_true'
     ) );
 }
 
-// add_action( 'rest_api_init', 'vericar_api_route' );
+// add_action( 'rest_api_init', 'upxforms_api_route' );
 
 # Process Core
-function vericar_verify_content($in){
-	if (strpos($in, 'vericar_search')!==false) {
-		add_action('wp_footer', 'vericarToolkitCode');
+function upxforms_verify_content($in){
+	if (strpos($in, 'upxforms_search')!==false) {
+		add_action('wp_footer', 'upxformsToolkitCode');
 		return $in;
 	}
-	if (strpos($in, '[vericar_start]')!==false) {
+	if (strpos($in, '[upxforms_start]')!==false) {
 		if (!in_the_loop() || !is_singular() || !is_main_query()) {
 			return $in;
 		}
-		return vericar_result($in);
+		return upxforms_result($in);
 	}
 	return $in;
 }
 
-add_filter('the_content', 'vericar_verify_content');
-
-# Vericar Result
-function vericar_result($in) {
-    return include VERICAR_INC . 'result.php';
-}
+add_filter('the_content', 'upxforms_verify_content');
 
 # Vericar Toolkit
-function vericarToolkitCode(){
+function upxformsToolkitCode(){
 	
 	echo '
 	
 <!-- Vericar Toolkit Code -->
 <script type="text/javascript">
 
-const vericar_form = document.getElementById("vericar_search");
+const upxforms_form = document.getElementById("upxforms_search");
 
-if (vericar_form) {
-	vericar_form.action = "' . site_url() . '/retorno-da-consulta";
+if (upxforms_form) {
+	upxforms_form.action = "' . site_url() . '/retorno-da-consulta";
 }
 
-const vericar_submit = document.getElementById("vericar_submit");
+const upxforms_submit = document.getElementById("upxforms_submit");
 
-if (vericar_submit) {
-	vericar_submit.addEventListener("click", function(event){
+if (upxforms_submit) {
+	upxforms_submit.addEventListener("click", function(event){
 		if (document.getElementById("form-field-name").value!="") {
-			vericar_form.submit();
+			upxforms_form.submit();
 		}
 	});
 }
 
 
-const vericar_form2 = document.getElementById("vericar_search2");
+const upxforms_form2 = document.getElementById("upxforms_search2");
 
-if (vericar_form2) {
-	vericar_form2.action = "' . site_url() . '/retorno-da-consulta";
+if (upxforms_form2) {
+	upxforms_form2.action = "' . site_url() . '/retorno-da-consulta";
 }
 
-const vericar_submit2 = document.getElementById("vericar_submit2");
+const upxforms_submit2 = document.getElementById("upxforms_submit2");
 
-if (vericar_submit2) {
-	vericar_submit2.addEventListener("click", function(event){
+if (upxforms_submit2) {
+	upxforms_submit2.addEventListener("click", function(event){
 		if (document.getElementById("form-field-name2").value!="") {
-			vericar_form2.submit();
+			upxforms_form2.submit();
 		}
 	});
 }
