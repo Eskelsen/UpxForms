@@ -81,11 +81,16 @@ class UpxForms {
 		$service = new \Google_Service_Sheets($client);
 		try{
 			$result = $service->spreadsheets_values->append($spreadsheetId, $range, $valueRange, $options);
-			printf("%s cells inserted.\n", $result->getUpdatedCells());
+			echo "{$result->getUpdates()->getUpdatedRows()} linha inserida.\n";
 			return $result;
 		}
 		catch(Exception $e) {
 			echo 'Message: ' .$e->getMessage(); // ToChange
 		}
+	}
+	
+	public static function log($msg, $log = false)
+	{
+		// ...
 	}
 }

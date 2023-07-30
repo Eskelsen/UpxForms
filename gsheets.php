@@ -6,9 +6,9 @@ ini_set('display_startup_erros', true);
 error_reporting(E_ALL);
 
 require __DIR__ . '/vendor/autoload.php';
-// include __DIR__ . '/inc/UpxForms.php';
+include __DIR__ . '/inc/UpxForms.php';
 
-// use Microframeworks\UpxForms;
+use Microframeworks\UpxForms;
 
 if (php_sapi_name() != 'cli') {
     exit('This application must be run on the command line.');
