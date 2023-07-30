@@ -10,6 +10,10 @@
  * License: MIT
  *
  */
+	# Dev Mode: Show Errors
+	ini_set('display_errors', true);
+	ini_set('display_startup_erros', true);
+	error_reporting(E_ALL);
 
 defined('ABSPATH') || exit;
 
@@ -68,7 +72,7 @@ function upxforms_menu() {
 		'manage_options',
 		'upxforms-settings',
 		'upxforms_settings',
-		'dashicons-admin-network'
+		'dashicons-media-spreadsheet'
 	);
 }
 

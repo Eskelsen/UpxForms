@@ -31,7 +31,7 @@ $logs   = empty($options['logs']) ? '' : (($options['logs']=='yes') ? 'checked' 
 			   
                <td class="forminp">
                   <fieldset>
-                     <input class="widefield" type="text" name="upxforms_email" id="upxforms_email" style="" value="<?= $email; ?>" placeholder="">
+                     <input class="widefield" type="text" name="upxforms_email" id="upxforms_email" value="<?= $email; ?>" placeholder="">
                   </fieldset>
                </td>
             </tr>
@@ -42,7 +42,7 @@ $logs   = empty($options['logs']) ? '' : (($options['logs']=='yes') ? 'checked' 
                </th>
                <td class="forminp">
                   <fieldset>
-                     <input class="widefield" type="password" name="upxforms_pswd" id="upxforms_pswd" style="" value="<?= $pswd; ?>" placeholder="">
+                     <input class="widefield" type="password" name="upxforms_pswd" id="upxforms_pswd" value="<?= $pswd; ?>" placeholder="">
                   </fieldset>
                </td>
             </tr>
@@ -53,7 +53,7 @@ $logs   = empty($options['logs']) ? '' : (($options['logs']=='yes') ? 'checked' 
                </th>
                <td class="forminp">
                   <fieldset>
-                     <input class="widefield" type="text" name="upxforms_token" id="upxforms_token" style="" value="<?= $token; ?>" placeholder="">
+                     <input class="widefield" type="text" name="upxforms_token" id="upxforms_token" value="<?= $token; ?>" placeholder="">
                   </fieldset>
                </td>
             </tr>
@@ -66,7 +66,7 @@ $logs   = empty($options['logs']) ? '' : (($options['logs']=='yes') ? 'checked' 
 				<td class="forminp">
 					<fieldset>
 						<legend class="screen-reader-text"><span>Descrição</span></legend>
-						<textarea rows="3" cols="100%" class="input-text wide-input " type="textarea" name="woocommerce_pixpagseguro_description" id="woocommerce_pixpagseguro_description" style="" placeholder="">Pague por Pix com qualquer app de pagamentos.</textarea>
+						<textarea class="widefield" rows="3" class="input-text wide-input " type="textarea" name="woocommerce_pixpagseguro_description" id="woocommerce_pixpagseguro_description" placeholder="Credenciais em formato JSON do arquivo gerado (credentials.json)."></textarea>
 					</fieldset>
 				</td>
 			</tr>
