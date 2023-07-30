@@ -28,7 +28,7 @@ $logs = empty($options['logs']) ? false : ($options['logs']=='yes');
 define('UPXFORMS_LOGS_ON', $logs);
 include UPXFORMS_INC . 'logs.php';
 
-# Vericar Logs File
+# UpxForms Logs File
 define('UPXFORMS_LOG', UPXFORMS_DOCS . 'logs.txt');
 
 # Update Settings
@@ -39,7 +39,7 @@ function upxforms_settings_saved() {
 	</div>';
 }
 
-if (!empty($_POST['upxforms_email'])) {
+if (!empty($_POST)) { // editar
 	
 	$options['email'] 		= $_POST['upxforms_email'] 			?? '';
 	$options['pswd']  		= $_POST['upxforms_pswd'] 			?? '';
@@ -48,7 +48,7 @@ if (!empty($_POST['upxforms_email'])) {
 	$options['search'] 		= $_POST['upxforms_search'] 		?? '';
 	$options['result'] 		= $_POST['upxforms_result'] 		?? '';
 	
-	update_option('upxforms_api_settings', array_filter($options));
+	update_option('upxforms_api_settings', $options);
 	
 	add_action('admin_notices', 'upxforms_settings_saved');
 }
@@ -62,10 +62,9 @@ add_action('admin_enqueue_scripts', 'upxforms_style');
 
 # Menu
 function upxforms_menu() {
-	// Add an item to the menu.
 	add_menu_page(
-		'Gerenciar API UpxForms',
-		'API UpxForms',
+		'Gerenciar UpxForms',
+		'UpxForms',
 		'manage_options',
 		'upxforms-settings',
 		'upxforms_settings',
@@ -96,7 +95,6 @@ function upxforms_api_route() {
 // add_action( 'rest_api_init', 'upxforms_api_route' );
 
 # Uninstall
-
 function uninstall_upxforms(){
 	delete_options('upxforms_api_settings');
 }
@@ -120,52 +118,18 @@ function upxforms_verify_content($in){
 
 add_filter('the_content', 'upxforms_verify_content');
 
-
-upxforms_api_settings
-
-# Vericar Toolkit
+# UpxForms Toolkit
 function upxformsToolkitCode(){
 	
 	echo '
 	
-<!-- Vericar Toolkit Code -->
+<!-- UpxForms Toolkit Code -->
 <script type="text/javascript">
 
-const upxforms_form = document.getElementById("upxforms_search");
 
-if (upxforms_form) {
-	upxforms_form.action = "' . site_url() . '/retorno-da-consulta";
-}
-
-const upxforms_submit = document.getElementById("upxforms_submit");
-
-if (upxforms_submit) {
-	upxforms_submit.addEventListener("click", function(event){
-		if (document.getElementById("form-field-name").value!="") {
-			upxforms_form.submit();
-		}
-	});
-}
-
-
-const upxforms_form2 = document.getElementById("upxforms_search2");
-
-if (upxforms_form2) {
-	upxforms_form2.action = "' . site_url() . '/retorno-da-consulta";
-}
-
-const upxforms_submit2 = document.getElementById("upxforms_submit2");
-
-if (upxforms_submit2) {
-	upxforms_submit2.addEventListener("click", function(event){
-		if (document.getElementById("form-field-name2").value!="") {
-			upxforms_form2.submit();
-		}
-	});
-}
 
 </script>
-<!-- End Vericar Toolkit Code -->
+<!-- End UpxForms Toolkit Code -->
 
 ';
 }

@@ -16,10 +16,10 @@ $logs   = empty($options['logs']) ? '' : (($options['logs']=='yes') ? 'checked' 
 
 <div class="wrap upxforms">
    <form method="post" id="mainform" action="" enctype="multipart/form-data">
-	  <h1 class="wp-heading-inline">API UpxForms</h1>
+	  <h1 class="wp-heading-inline">UpxForms</h1>
 	  <hr class="wp-header-end">
 	  
-	  <p>Gerenciamento de credencias e telas da API. (<a href="<?= UPXFORMS_URL . 'docs'; ?>" target="_blank">Documentação</a>)</p>
+	  <p>Gerenciamento de credencias. (<a href="<?= UPXFORMS_URL . 'docs'; ?>" target="_blank">Documentação</a>)</p>
 	  
       <table class="form-table">
          <tbody>
@@ -58,6 +58,19 @@ $logs   = empty($options['logs']) ? '' : (($options['logs']=='yes') ? 'checked' 
                </td>
             </tr>
 			
+			<tr valign="top">
+				<th scope="row" class="titledesc">
+					<label for="woocommerce_pixpagseguro_description">Descrição <span class="woocommerce-help-tip"></span></label>
+				</th>
+				
+				<td class="forminp">
+					<fieldset>
+						<legend class="screen-reader-text"><span>Descrição</span></legend>
+						<textarea rows="3" cols="100%" class="input-text wide-input " type="textarea" name="woocommerce_pixpagseguro_description" id="woocommerce_pixpagseguro_description" style="" placeholder="">Pague por Pix com qualquer app de pagamentos.</textarea>
+					</fieldset>
+				</td>
+			</tr>
+			
             <tr valign="top">
                <th scope="row" class="titledesc">
                   <label for="upxforms_logs">Logs</label>
@@ -66,7 +79,7 @@ $logs   = empty($options['logs']) ? '' : (($options['logs']=='yes') ? 'checked' 
                   <fieldset>
                      <label for="logs">
                      <input class="widefield" type="checkbox" name="upxforms_logs" id="upxforms_logs" style="" value="1" <?= $logs; ?>>Gravar logs de uso</label><br>
-                     <p class="description">Os logs da API ficam <a href="<?= UPXFORMS_URL . 'logs'; ?>" target="_blank">aqui</a>. Você também pode ler a documentação do plugin <a href="<?= UPXFORMS_URL . 'docs'; ?>" target="_blank">aqui</a>.</p>
+                     <p class="description">Os logs ficam <a href="<?= UPXFORMS_URL . 'logs'; ?>" target="_blank">aqui</a>. Você também pode ler a documentação do plugin <a href="<?= UPXFORMS_URL . 'docs'; ?>" target="_blank">aqui</a>.</p>
                   </fieldset>
                </td>
             </tr>

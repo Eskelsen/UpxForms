@@ -3,10 +3,10 @@
 # Logs
 
 # Timelapse (180 days)
-define('VERICAR_LOG_CLEAR', (60*60*24)*180);
+define('UPXFORMS_LOG_CLEAR', (60*60*24)*180);
 
-# Vericar Logs File
-define('VERICAR_LOG', __DIR__ . '/logs.txt');
+# UpxForms Logs File
+define('UPXFORMS_LOG', __DIR__ . '/logs.txt');
 
 ?>
 <!doctype html>
@@ -16,7 +16,7 @@ define('VERICAR_LOG', __DIR__ . '/logs.txt');
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Logs do Módulo">
     <meta name="author" content="Microframeworks">
-    <title>Logs » Vericar</title>
+    <title>Logs » UpxForms</title>
 
 <link href="https://getbootstrap.com/docs/5.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
@@ -87,7 +87,7 @@ define('VERICAR_LOG', __DIR__ . '/logs.txt');
 <div class="container">
   <main>
 	<div class="py-5 text-center">
-		<img class="d-block mx-auto mb-4" src="../vericar.webp" alt="" width="172">
+		<img class="d-block mx-auto mb-4" src="../upxforms.webp" alt="" width="172">
 		<h2>Logs do Módulo</h2>
 		<p class="lead">Lista em ordem cronológica decrescente dos registros de log.</p>
 		<p class="lead">A documentação está <a href="../docs">aqui</a></p>
@@ -99,9 +99,9 @@ define('VERICAR_LOG', __DIR__ . '/logs.txt');
 
 <?php
 
-$limit 	= time() - VERICAR_LOG_CLEAR;
+$limit 	= time() - UPXFORMS_LOG_CLEAR;
 $raw 	= [];
-$ctn 	= array_filter(explode("\r\n",file_get_contents(VERICAR_LOG)));
+$ctn 	= array_filter(explode("\r\n",file_get_contents(UPXFORMS_LOG)));
 
 foreach ($ctn as $line) {
 	$tmp = explode('|', $line);
@@ -111,7 +111,7 @@ foreach ($ctn as $line) {
 }
 
 $data = implode("\r\n",$raw) . "\r\n";
-file_put_contents(VERICAR_LOG, $data);
+file_put_contents(UPXFORMS_LOG, $data);
 
 $raw = array_reverse($raw);
 
