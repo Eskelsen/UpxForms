@@ -14,13 +14,6 @@ if (php_sapi_name() != 'cli') {
     exit('This application must be run on the command line.');
 }
 
-				echo 'Enter verification code: ';
-				echo 'Enter verification code: ';
-				echo trim(fgets(STDIN)) . PHP_EOL;
-				print 'Enter verification code: ';
-				echo trim(fgets(STDIN)) . PHP_EOL;
-				exit;
-
 $arg = $argv[1] ?? false;
 
 $json = hex2bin($arg);

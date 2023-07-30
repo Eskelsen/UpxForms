@@ -33,15 +33,15 @@ class UpxForms {
 			} else {
 				$authUrl = $client->createAuthUrl();
 				
-				printf("Open the following link in your browser:\n%s\n", $authUrl); // ToChange
-				print 'Enter verification code: '; // ToChange
+				printf("Open the following link in your browser:\n%s\n", $authUrl);
+				print 'Enter verification code: ';
 				$authCode = trim(fgets(STDIN));
 
 				$accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
 				$client->setAccessToken($accessToken);
 
 				if (array_key_exists('error', $accessToken)) {
-					throw new Exception(join(', ', $accessToken)); // ToChange
+					throw new Exception(join(', ', $accessToken));
 				}
 			}
 
@@ -81,7 +81,7 @@ class UpxForms {
 		$service = new \Google_Service_Sheets($client);
 		try{
 			$result = $service->spreadsheets_values->append($spreadsheetId, $range, $valueRange, $options);
-			printf("%s cells updated.\n", $result->getUpdatedCells()); // ToChange
+			printf("%s cells inserted.\n", $result->getUpdatedCells());
 			return $result;
 		}
 		catch(Exception $e) {
