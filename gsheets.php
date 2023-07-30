@@ -6,20 +6,26 @@ ini_set('display_startup_erros', true);
 error_reporting(E_ALL);
 
 require __DIR__ . '/vendor/autoload.php';
+// include __DIR__ . '/inc/UpxForms.php';
 
-use Microframeworks;
-
-include __DIR__ . '/inc/gsheets_functions.php';
+// use Microframeworks\UpxForms;
 
 if (php_sapi_name() != 'cli') {
     exit('This application must be run on the command line.');
 }
 
+				echo 'Enter verification code: ';
+				echo 'Enter verification code: ';
+				echo trim(fgets(STDIN)) . PHP_EOL;
+				print 'Enter verification code: ';
+				echo trim(fgets(STDIN)) . PHP_EOL;
+				exit;
+
 $arg = $argv[1] ?? false;
 
-echo $arg;
+$json = hex2bin($arg);
 
-exit;
+$data = json_decode($json, 1);
 
 	// ToChange
 	$newRow = [
@@ -38,4 +44,4 @@ $valueRange = UpxForms::valueRange();
 $valueRange->setValues($rows);
 $range = 'Sheet1';
 $options = ['valueInputOption' => 'USER_ENTERED'];
-insertRows($spreadsheetId, $range, $valueRange, $options);
+UpxForms::insertRows($spreadsheetId, $range, $valueRange, $options, $data);

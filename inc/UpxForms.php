@@ -1,6 +1,6 @@
 <?php
 
-# Google Sheets Functions
+# Google Sheets Class
 
 namespace Microframeworks;
 
@@ -14,18 +14,17 @@ class UpxForms {
 		return new \Google_Service_Sheets_ValueRange();
 	}
 	
-	public function getClient($credentials, $token = false)
+	public static function getClient($credentials, $token = false)
 	{
-		$client = new Google\Client();
+		$client = new Client();
 		$client->setApplicationName('Google Sheets API PHP Quickstart');
 		$client->setScopes('https://www.googleapis.com/auth/spreadsheets');
 		$client->setAuthConfig($credentials);
 		$client->setAccessType('offline');
 		$client->setPrompt('select_account consent');
 		
-		if ($stringToken)
-			$dataToken = json_decode($token, true);
-			$client->setAccessToken($dataToken);
+		if ($token) {
+			$client->setAccessToken($token);
 		}
 
 		if ($client->isAccessTokenExpired()) {
@@ -33,6 +32,7 @@ class UpxForms {
 				$client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
 			} else {
 				$authUrl = $client->createAuthUrl();
+				
 				printf("Open the following link in your browser:\n%s\n", $authUrl); // ToChange
 				print 'Enter verification code: '; // ToChange
 				$authCode = trim(fgets(STDIN));
@@ -45,18 +45,18 @@ class UpxForms {
 				}
 			}
 
-			if (!file_exists(dirname($tokenPath))) { // ToChange
-				mkdir(dirname($tokenPath), 0700, true); // ToChange
-			} // ToChange
-			file_put_contents($tokenPath, json_encode($client->getAccessToken())); // ToChange
+			// if (!file_exists(dirname($tokenPath))) { // ToChange
+				// mkdir(dirname($tokenPath), 0700, true); // ToChange
+			// } // ToChange
+			// file_put_contents($tokenPath, json_encode($client->getAccessToken())); // ToChange
 		}
 		return $client;
 	}
 
-	public function updateValues($spreadsheetId, $range, $valueInputOption, $values)
+	public function updateValues($spreadsheetId, $range, $valueInputOption, $values, $data)
 	{
-		$client = getClient();
-		$service = new Google_Service_Sheets($client);
+		$client = self::getClient($data['credentials'], $data['token']);
+		$service = new \Google_Service_Sheets($client);
 		try{
 			$body = new Google_Service_Sheets_ValueRange([
 			'values' => $values
@@ -66,7 +66,7 @@ class UpxForms {
 			];
 
 			$result = $service->spreadsheets_values->update($spreadsheetId, $range, $body, $params);
-			printf("%d cells updated.\n", $result->getUpdatedCells()); // ToChange
+			// printf("%d cells updated.\n", $result->getUpdatedCells());
 			return $result;
 		}
 		catch(Exception $e) {
@@ -74,13 +74,14 @@ class UpxForms {
 		}
 	}
 
-	public function insertRows($spreadsheetId, $range, $valueRange, $options)
+	public static function insertRows($spreadsheetId, $range, $valueRange, $options, $data)
 	{
-		$client = getClient();
-		$service = new Google_Service_Sheets($client);
+		$client = self::getClient($data['credentials'], $data['token']);
+		// $client->getAccessToken();
+		$service = new \Google_Service_Sheets($client);
 		try{
 			$result = $service->spreadsheets_values->append($spreadsheetId, $range, $valueRange, $options);
-			printf("%s cells updated.\n", json_encode($result)); // ToChange
+			printf("%s cells updated.\n", $result->getUpdatedCells()); // ToChange
 			return $result;
 		}
 		catch(Exception $e) {

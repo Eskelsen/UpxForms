@@ -2,7 +2,7 @@
     "name": "eskelsen/upxforms",
     "description": "A WordPress Google Sheets Leads Forms Plugin",
     "type": "wordpress-plugin",
-    "license": "MiT",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Eskelsen\\Upxforms\\": "src/"
@@ -15,5 +15,7 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {
+        "google/apiclient": "^2.0"
+    }
 }
