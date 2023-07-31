@@ -7,9 +7,8 @@ defined('ABSPATH') || exit;
 # Get Settings
 $options = get_option('upxforms_api_settings');
 
-$email  = $options['email']  ?? '';
-$pswd   = $options['pswd']   ?? '';
-$token  = $options['token']  ?? '';
+$planilha      = $options['planilha']  ?? '';
+$credenciais   = $options['credenciais']   ?? '';
 $logs   = empty($options['logs']) ? '' : (($options['logs']=='yes') ? 'checked' : '');
 
 ?>
@@ -31,45 +30,23 @@ $logs   = empty($options['logs']) ? '' : (($options['logs']=='yes') ? 'checked' 
 			   
                <td class="forminp">
                   <fieldset>
-                     <input class="widefield" type="text" name="upxforms_email" id="upxforms_email" value="<?= $email; ?>" placeholder="">
+                     <input class="widefield" type="text" name="planilha" id="planilha" value="<?= $planilha; ?>" placeholder="ID da planilha">
                   </fieldset>
                </td>
             </tr>
-			
+					
             <tr valign="top">
                <th scope="row" class="titledesc">
-                  <label for="upxforms_pswd">Senha</label>
+                  <label for="woocommerce_pixpagseguro_description">Descrição <span class="woocommerce-help-tip"></span></label>
                </th>
+               
                <td class="forminp">
                   <fieldset>
-                     <input class="widefield" type="password" name="upxforms_pswd" id="upxforms_pswd" value="<?= $pswd; ?>" placeholder="">
+                     <legend class="screen-reader-text"><span>Descrição</span></legend>
+                     <textarea class="widefield" rows="3" class="input-text wide-input " type="textarea" name="credenciais" id="credenciais" placeholder="Credenciais em formato JSON do arquivo gerado (credentials.json)."><?= $credenciais; ?></textarea>
                   </fieldset>
                </td>
             </tr>
-			
-            <tr valign="top">
-               <th scope="row" class="titledesc">
-                  <label for="upxforms_token">Token</label>
-               </th>
-               <td class="forminp">
-                  <fieldset>
-                     <input class="widefield" type="text" name="upxforms_token" id="upxforms_token" value="<?= $token; ?>" placeholder="">
-                  </fieldset>
-               </td>
-            </tr>
-			
-			<tr valign="top">
-				<th scope="row" class="titledesc">
-					<label for="woocommerce_pixpagseguro_description">Descrição <span class="woocommerce-help-tip"></span></label>
-				</th>
-				
-				<td class="forminp">
-					<fieldset>
-						<legend class="screen-reader-text"><span>Descrição</span></legend>
-						<textarea class="widefield" rows="3" class="input-text wide-input " type="textarea" name="woocommerce_pixpagseguro_description" id="woocommerce_pixpagseguro_description" placeholder="Credenciais em formato JSON do arquivo gerado (credentials.json)."></textarea>
-					</fieldset>
-				</td>
-			</tr>
 			
             <tr valign="top">
                <th scope="row" class="titledesc">

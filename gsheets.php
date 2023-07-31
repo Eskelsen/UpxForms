@@ -14,10 +14,9 @@ if (php_sapi_name() != 'cli') {
     exit('This application must be run on the command line.');
 }
 
+// Nao vai precisar
 $arg = $argv[1] ?? false;
-
 $json = hex2bin($arg);
-
 $data = json_decode($json, 1);
 
 	// ToChange
