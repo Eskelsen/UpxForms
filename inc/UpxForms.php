@@ -7,7 +7,6 @@ class UpxForms {
 	
 	public static function valueRange()
 	{
-		// return new \Google_Service_Sheets_ValueRange();
 		return new \Google\Service\Sheets\ValueRange();
 	}
 
@@ -38,8 +37,8 @@ class UpxForms {
 
 		$authUrl = $client->createAuthUrl();
 		
-		printf("Abra o seguinte link em seu navegador:\n%s\n", $authUrl);
-		print 'Introduza o codigo de verificacao do link (use urldecode): ';
+		echo "Abra o seguinte link em seu navegador:\n\n" . $authUrl;
+		echo 'Introduza o codigo de verificacao: ';
 		$authCode = trim(fgets(STDIN));
 
 		$accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
@@ -89,14 +88,10 @@ class UpxForms {
 		}
 
 		$service = new \Google\Service\Sheets($client);
-		try{
-			$body = new \Google\Service\Sheets\ValueRange([
-			'values' => $values
-			]);
-			$params = [
-			'valueInputOption' => $valueInputOption
-			];
 
+		try{
+			$body = new \Google\Service\Sheets\ValueRange(['values' => $values]);
+			$params = ['valueInputOption' => $valueInputOption];
 			$result = $service->spreadsheets_values->update($spreadsheetId, $range, $body, $params);
 			// printf("%d cells updated.\n", $result->getUpdatedCells());
 			// self::log('Mensagem: ' .$e->getMessage(), 1);
@@ -111,7 +106,6 @@ class UpxForms {
 	public static function insertRows($spreadsheetId, $range, $valueRange, $options, $data)
 	{
 		$client = self::getClient($data);
-		// $client->getAccessToken();
 		$service = new \Google\Service\Sheets($client);
 		try{
 			$result = $service->spreadsheets_values->append($spreadsheetId, $range, $valueRange, $options);
@@ -124,13 +118,11 @@ class UpxForms {
 		}
 	}
 
-	public static function getAll($spreadsheetId, $sheet,$data)
+	public static function getAll($spreadsheetId, $range, $data)
 	{
 		$client = self::getClient($data);
-		// $client->getAccessToken();
 		$service = new \Google\Service\Sheets($client);
 		try{
-			$range = $sheet; // here we use the name of the Sheet to get all the rows
 			$response = $service->spreadsheets_values->get($spreadsheetId, $range);
 			return $response->getValues();
 		}
@@ -148,7 +140,8 @@ class UpxForms {
 			file_put_contents($arquivo, '');
 			chmod($arquivo, 0777);
 		}
-		file_put_contents($arquivo, $token);
+		$u = file_put_contents($arquivo, $token);
+		return ($u) ? true : false;
 	}
 
 	public static function log($msg, $log = false)
