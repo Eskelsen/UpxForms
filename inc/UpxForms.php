@@ -13,9 +13,9 @@ class UpxForms {
 
 	private static function newClient($credentials)
 	{
-		if (empty($data['credentials'])) {
+		if (empty($credentials)) {
 			self::log('Credenciais ausentes.', 1);
-			return false;
+			exit;
 		}
 
 		$client = new \Google\Client();
@@ -68,9 +68,9 @@ class UpxForms {
 			if ($client->getRefreshToken()) {
 				$client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
 				if (empty($data['saveToken'])) {
-					call_user_func($data['saveToken'], json_encode($client->getAccessToken()));
-				} else {
 					self::saveToken(json_encode($client->getAccessToken()));
+				} else {
+					call_user_func($data['saveToken'], json_encode($client->getAccessToken()));
 				}
 			} else {
 				self::log('Nao foi possivel renovar o token de acesso, a configuracao deve ser feita pelo modo cli.', 1);
@@ -124,16 +124,15 @@ class UpxForms {
 		}
 	}
 
-	public static function getAll($spreadsheetId, $data)
+	public static function getAll($spreadsheetId, $sheet,$data)
 	{
 		$client = self::getClient($data);
 		// $client->getAccessToken();
 		$service = new \Google\Service\Sheets($client);
 		try{
-			$range = 'Lentes'; // here we use the name of the Sheet to get all the rows
+			$range = $sheet; // here we use the name of the Sheet to get all the rows
 			$response = $service->spreadsheets_values->get($spreadsheetId, $range);
-			$values = $response->getValues();
-			var_dump($values);
+			return $response->getValues();
 		}
 		catch(\Exception $e) {
 			self::log('Mensagem: ' .$e->getMessage(), 1);
