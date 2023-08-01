@@ -14,10 +14,13 @@ if (php_sapi_name() != 'cli') { // remover
     exit('This application must be run on the command line.');
 }
 
-// Nao vai precisar
-$arg = $argv[1] ?? false;
-$json = hex2bin($arg);
-$data = json_decode($json, 1);
+$credentials = json_decode(file_get_contents('aaa.json'), 1);
+$token = json_decode(file_get_contents('toki.json'), 1);
+
+$data = [
+	'credentials' => $credentials,
+	'token' => $token
+];
 
 	// ToChange
 	$newRow = [
@@ -30,10 +33,16 @@ $data = json_decode($json, 1);
 	];
 
 $spreadsheetId = '1XY-OMSIlS7Rb4l2sVqsquy_grq519RuBN_uxeFI1IZ8'; // ToChange
+$spreadsheetId = '1SRrgH819TKYGbzJ88qxpxixfbXEOiai2JnTr8aEz-cc';
+
+$u = UpxForms::getAll($spreadsheetId, $data);
+var_dump($u);
+exit;
 
 $rows = [$newRow];
 $valueRange = UpxForms::valueRange();
 $valueRange->setValues($rows);
 $range = 'Sheet1';
 $options = ['valueInputOption' => 'USER_ENTERED'];
-UpxForms::insertRows($spreadsheetId, $range, $valueRange, $options, $data);
+$u = UpxForms::insertRows($spreadsheetId, $range, $valueRange, $options, $data);
+var_dump($u);

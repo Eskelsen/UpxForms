@@ -24,6 +24,7 @@ $credentials = json_decode(file_get_contents('aaa.json'), 1);
 
 $callback = function($in){
     file_put_contents(__DIR__ . '/toki.json', $in);
+    return ($in) ? true : false;
 };
 
 UpxForms::getToken($credentials, $callback);

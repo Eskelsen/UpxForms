@@ -24,7 +24,6 @@ class UpxForms {
 
 	public static function getToken(Array $credentials, Callable $setToken) : bool
 	{
-		echo 'a' . PHP_EOL;
 		if (php_sapi_name()!='cli') {
 			self::log('Acesso negado. A configuracao deve ser feita pelo modo cli.', 1);
 			return false;
@@ -53,7 +52,7 @@ class UpxForms {
 	{
 		$client = self::newClient($credentials);
 		
-		if ($token) {
+		if (!$token) {
 			self::log('Token ausente.', 1);
 			return false;
 		}
@@ -74,6 +73,9 @@ class UpxForms {
 	public function updateValues($spreadsheetId, $range, $valueInputOption, $values, $data)
 	{
 		$client = self::getClient($data['credentials'], $data['token']);
+		if (!$client) {
+			exit('Falha ao iniciar app' . PHP_EOL);
+		}
 
 		$service = new \Google\Service\Sheets($client);
 		try{
@@ -104,6 +106,23 @@ class UpxForms {
 			$result = $service->spreadsheets_values->append($spreadsheetId, $range, $valueRange, $options);
 			self::log($result->getUpdates()->getUpdatedRows() . ' linha(s) inserida(s).', 1);
 			return $result;
+		}
+		catch(\Exception $e) {
+			self::log('Mensagem: ' .$e->getMessage(), 1);
+			return false;
+		}
+	}
+
+	public static function getAll($spreadsheetId, $data)
+	{
+		$client = self::getClient($data['credentials'], $data['token']);
+		// $client->getAccessToken();
+		$service = new \Google\Service\Sheets($client);
+		try{
+			$range = 'Lentes'; // here we use the name of the Sheet to get all the rows
+			$response = $service->spreadsheets_values->get($spreadsheetId, $range);
+			$values = $response->getValues();
+			var_dump($values);
 		}
 		catch(\Exception $e) {
 			self::log('Mensagem: ' .$e->getMessage(), 1);
