@@ -3,65 +3,81 @@
 # Google Sheets Class
 
 namespace Microframeworks;
-
-use Google\Client;
-use Google\Service\Sheets\ValueRange;
-
 class UpxForms {
 	
 	public static function valueRange()
 	{
-		return new \Google_Service_Sheets_ValueRange();
+		// return new \Google_Service_Sheets_ValueRange();
+		return new \Google\Service\Sheets\ValueRange();
 	}
-	
-	public static function getClient($credentials, $token = false)
+
+	private static function newClient($credentials)
 	{
-		$client = new Client();
+		$client = new \Google\Client();
 		$client->setApplicationName('Google Sheets API PHP Quickstart');
 		$client->setScopes('https://www.googleapis.com/auth/spreadsheets');
 		$client->setAuthConfig($credentials);
 		$client->setAccessType('offline');
 		$client->setPrompt('select_account consent');
+		return $client;
+	}
+
+	public static function getToken(Array $credentials, Callable $setToken) : bool
+	{
+		echo 'a' . PHP_EOL;
+		if (php_sapi_name()!='cli') {
+			self::log('Acesso negado. A configuracao deve ser feita pelo modo cli.', 1);
+			return false;
+		}
+
+		$client = self::newClient($credentials);
+
+		$authUrl = $client->createAuthUrl();
+		
+		printf("Abra o seguinte link em seu navegador:\n%s\n", $authUrl);
+		print 'Introduza o codigo de verificacao do link (use urldecode): ';
+		$authCode = trim(fgets(STDIN));
+
+		$accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
+		$client->setAccessToken($accessToken);
+
+		if (array_key_exists('error', $accessToken)) {
+			self::log('Mensagem: ' . implode(', ', $accessToken), 1);
+			return false;
+		}
+
+        return call_user_func($setToken, json_encode($client->getAccessToken()));
+	}
+	
+	public static function getClient($credentials, $token = false)
+	{
+		$client = self::newClient($credentials);
 		
 		if ($token) {
-			$client->setAccessToken($token);
+			self::log('Token ausente.', 1);
+			return false;
 		}
+
+		$client->setAccessToken($token);
 
 		if ($client->isAccessTokenExpired()) {
 			if ($client->getRefreshToken()) {
 				$client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
 			} else {
-
-				if (php_sapi_name()!='cli') {
-					self::log('Nao foi possivel renovar o token de acesso, a configuracao deve ser feita pelo modo cli.', 1);
-					return [false, false];
-				}
-
-				$authUrl = $client->createAuthUrl();
-				
-				printf("Abra o seguinte link em seu navegador:\n%s\n", $authUrl);
-				print 'Introduza o codigo de verificacao do link (use urldecode): ';
-				$authCode = trim(fgets(STDIN));
-
-				$accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
-				$client->setAccessToken($accessToken);
-
-				if (array_key_exists('error', $accessToken)) {
-					self::log('Mensagem: ' . implode(', ', $accessToken), 1);
-					return [false, false];
-				}
+				self::log('Nao foi possivel renovar o token de acesso, a configuracao deve ser feita pelo modo cli.', 1);
+				return false;
 			}
 		}
-		return [$client, $token];
+		return $client;
 	}
 
 	public function updateValues($spreadsheetId, $range, $valueInputOption, $values, $data)
 	{
-		[$client, $token] = self::getClient($data['credentials'], $data['token']);
+		$client = self::getClient($data['credentials'], $data['token']);
 
-		$service = new \Google_Service_Sheets($client);
+		$service = new \Google\Service\Sheets($client);
 		try{
-			$body = new Google_Service_Sheets_ValueRange([
+			$body = new \Google\Service\Sheets\ValueRange([
 			'values' => $values
 			]);
 			$params = [
@@ -71,33 +87,34 @@ class UpxForms {
 			$result = $service->spreadsheets_values->update($spreadsheetId, $range, $body, $params);
 			// printf("%d cells updated.\n", $result->getUpdatedCells());
 			// self::log('Mensagem: ' .$e->getMessage(), 1);
-			return [$result, $token];
+			return $result;
 		}
-		catch(Exception $e) {
+		catch(\Exception $e) {
 			self::log('Mensagem: ' .$e->getMessage(), 1);
+			return false;
 		}
 	}
 
 	public static function insertRows($spreadsheetId, $range, $valueRange, $options, $data)
 	{
-		[$client, $token] = self::getClient($data['credentials'], $data['token']);
+		$client = self::getClient($data['credentials'], $data['token']);
 		// $client->getAccessToken();
-		$service = new \Google_Service_Sheets($client);
+		$service = new \Google\Service\Sheets($client);
 		try{
 			$result = $service->spreadsheets_values->append($spreadsheetId, $range, $valueRange, $options);
 			self::log($result->getUpdates()->getUpdatedRows() . ' linha(s) inserida(s).', 1);
-			return [$result, $token];
+			return $result;
 		}
-		catch(Exception $e) {
+		catch(\Exception $e) {
 			self::log('Mensagem: ' .$e->getMessage(), 1);
-			return [false, $token];
+			return false;
 		}
 	}
 	
 	public static function log($msg, $log = false)
 	{
 		if ($log) {
-			$arquivo = dirname(__DIR__) . '/data/log.txt';
+			$arquivo = dirname(__DIR__, 1) . '/data/log.txt';
 			if (!is_file($arquivo)) {
 				file_put_contents($arquivo, '');
 				chmod($arquivo, 0777);

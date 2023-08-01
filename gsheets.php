@@ -10,7 +10,7 @@ include __DIR__ . '/inc/UpxForms.php';
 
 use Microframeworks\UpxForms;
 
-if (php_sapi_name() != 'cli') {
+if (php_sapi_name() != 'cli') { // remover
     exit('This application must be run on the command line.');
 }
 

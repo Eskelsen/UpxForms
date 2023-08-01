@@ -10,19 +10,20 @@ include __DIR__ . '/inc/UpxForms.php';
 
 use Microframeworks\UpxForms;
 
+if (!empty($_GET['code'])) {
+	exit('Código: <input type="text" size="74" value="' . $_GET['code'] . '">');
+}
+
 if (php_sapi_name() != 'cli') {
     exit('This application must be run on the command line.');
 }
 
 echo 'Running...' . PHP_EOL;
 
-$credential = ''; // array
-$token = ''; // array
+$credentials = json_decode(file_get_contents('aaa.json'), 1);
 
-UpxForms::getClient($credential, $token);
+$callback = function($in){
+    file_put_contents(__DIR__ . '/toki.json', $in);
+};
 
-// Obter options
-// Inserir options no metodo
-
-
-
+UpxForms::getToken($credentials, $callback);
