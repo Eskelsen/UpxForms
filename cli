@@ -20,11 +20,11 @@ if (php_sapi_name() != 'cli') {
 
 echo 'Running...' . PHP_EOL;
 
-$credentials = json_decode(file_get_contents('aaa.json'), 1);
+$credentials = json_decode(file_get_contents(__DIR__ . '/data/credentials.json'), 1);
 
 $callback = function($in){
-    file_put_contents(__DIR__ . '/toki.json', $in);
+    file_put_contents(__DIR__ . '/data/token.json', $in);
     return ($in) ? true : false;
 };
 
-UpxForms::getToken($credentials, $callback);
+UpxForms::getAccessToken($credentials, $callback);

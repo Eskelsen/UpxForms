@@ -18,8 +18,9 @@ $credentials = json_decode(file_get_contents('aaa.json'), 1);
 $token = json_decode(file_get_contents('toki.json'), 1);
 
 $data = [
-	'credentials' => $credentials,
-	'token' => $token
+	'credentials' 	=> $credentials,
+	'token' 		=> $token,
+	'saveToken' 	=> false 	// callback, false or (=) absent
 ];
 
 	// ToChange
@@ -33,7 +34,7 @@ $data = [
 	];
 
 $spreadsheetId = '1XY-OMSIlS7Rb4l2sVqsquy_grq519RuBN_uxeFI1IZ8'; // ToChange
-$spreadsheetId = '1SRrgH819TKYGbzJ88qxpxixfbXEOiai2JnTr8aEz-cc';
+// $spreadsheetId = '1SRrgH819TKYGbzJ88qxpxixfbXEOiai2JnTr8aEz-cc';
 
 $u = UpxForms::getAll($spreadsheetId, $data);
 var_dump($u);

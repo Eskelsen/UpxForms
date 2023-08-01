@@ -13,6 +13,11 @@ class UpxForms {
 
 	private static function newClient($credentials)
 	{
+		if (empty($data['credentials'])) {
+			self::log('Credenciais ausentes.', 1);
+			return false;
+		}
+
 		$client = new \Google\Client();
 		$client->setApplicationName('Google Sheets API PHP Quickstart');
 		$client->setScopes('https://www.googleapis.com/auth/spreadsheets');
@@ -22,7 +27,7 @@ class UpxForms {
 		return $client;
 	}
 
-	public static function getToken(Array $credentials, Callable $setToken) : bool
+	public static function getAccessToken(Array $credentials, Callable $saveToken) : bool
 	{
 		if (php_sapi_name()!='cli') {
 			self::log('Acesso negado. A configuracao deve ser feita pelo modo cli.', 1);
@@ -45,23 +50,28 @@ class UpxForms {
 			return false;
 		}
 
-        return call_user_func($setToken, json_encode($client->getAccessToken()));
+        return call_user_func($saveToken, json_encode($client->getAccessToken()));
 	}
 	
-	public static function getClient($credentials, $token = false)
+	public static function getClient($data)
 	{
-		$client = self::newClient($credentials);
-		
-		if (!$token) {
+		$client = self::newClient($data['credentials']);
+
+		if (empty($data['token'])) {
 			self::log('Token ausente.', 1);
 			return false;
 		}
 
-		$client->setAccessToken($token);
+		$client->setAccessToken($data['token']);
 
 		if ($client->isAccessTokenExpired()) {
 			if ($client->getRefreshToken()) {
 				$client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
+				if (empty($data['saveToken'])) {
+					call_user_func($data['saveToken'], json_encode($client->getAccessToken()));
+				} else {
+					self::saveToken(json_encode($client->getAccessToken()));
+				}
 			} else {
 				self::log('Nao foi possivel renovar o token de acesso, a configuracao deve ser feita pelo modo cli.', 1);
 				return false;
@@ -72,7 +82,8 @@ class UpxForms {
 
 	public function updateValues($spreadsheetId, $range, $valueInputOption, $values, $data)
 	{
-		$client = self::getClient($data['credentials'], $data['token']);
+		$client = self::getClient($data);
+
 		if (!$client) {
 			exit('Falha ao iniciar app' . PHP_EOL);
 		}
@@ -99,7 +110,7 @@ class UpxForms {
 
 	public static function insertRows($spreadsheetId, $range, $valueRange, $options, $data)
 	{
-		$client = self::getClient($data['credentials'], $data['token']);
+		$client = self::getClient($data);
 		// $client->getAccessToken();
 		$service = new \Google\Service\Sheets($client);
 		try{
@@ -115,7 +126,7 @@ class UpxForms {
 
 	public static function getAll($spreadsheetId, $data)
 	{
-		$client = self::getClient($data['credentials'], $data['token']);
+		$client = self::getClient($data);
 		// $client->getAccessToken();
 		$service = new \Google\Service\Sheets($client);
 		try{
@@ -130,6 +141,17 @@ class UpxForms {
 		}
 	}
 	
+	public static function saveToken($in)
+	{
+		$token = is_string($in) ? $in : json_encode($in);
+		$arquivo = dirname(__DIR__, 1) . '/data/token.json';
+		if (!is_file($arquivo)) {
+			file_put_contents($arquivo, '');
+			chmod($arquivo, 0777);
+		}
+		file_put_contents($arquivo, $token);
+	}
+
 	public static function log($msg, $log = false)
 	{
 		if ($log) {
