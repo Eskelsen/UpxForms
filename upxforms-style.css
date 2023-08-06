@@ -1,3 +1,80 @@
+#regForm {
+  background-color: #ffffff;
+  margin: 10px auto;
+  font-family: Raleway;
+  padding: 40px;
+  width: 70%;
+  min-width: 280px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
+}
+
+.upxforms h1 {
+  text-align: center;  
+}
+
+.upxforms-text-input {
+  padding: 10px;
+  width: 100%;
+  font-size: 17px;
+  font-family: Raleway;
+  border: 1px solid #aaaaaa;
+}
+
+input.invalid {
+  background-color: #ebecfa;
+}
+
+#thanks {
+  background-color: #ffffff;
+  margin: 40px auto;
+  font-family: Raleway;
+  padding: 0 40px;
+  width: 70%;
+  min-width: 300px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
+  display: none;
+}
+
+.upxforms-button {
+  background-color: #3c9997 !important;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 17px;
+  font-family: Raleway;
+  cursor: pointer;
+}
+
+.upxforms-button:hover {
+  opacity: 0.8;
+}
+
+#prevBtn {
+  background-color: #dcdef2;
+}
+
+/* Make circles that indicate the steps of the form: */
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #dcdef2;
+  border: none;  
+  /* border-radius: 50%; */
+  border-radius: 1px 8px;
+  display: inline-block;
+  opacity: 0.5;
+}
+
+.step.active {
+  opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: https://microframeworks.com/w/kommo/upxforms/comercial/thank.php  */
+.step.finish {
+  background-color: #3c9997;
+}
+
 /* smartphones, iPhone, portrait 480x320 phones */
 @media (min-width:320px)  {
 	.widefield {width: 100%}

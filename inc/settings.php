@@ -4,12 +4,13 @@
 
 defined('ABSPATH') || exit;
 
-# Get Settings
 $options = get_option('upxforms_api_settings');
 
-$planilha      = $options['planilha']  ?? '';
-$credenciais   = $options['credenciais']   ?? '';
-$logs   = empty($options['logs']) ? '' : (($options['logs']=='yes') ? 'checked' : '');
+$planilha	= $options['planilha']  	?? '';
+$cred_temp	= $options['credenciais']   ?? '';
+$logs		= empty($options['logs']) 	? '' : (($options['logs']=='yes') ? 'checked' : '');
+
+$credenciais = empty($cred_temp) ? '' : json_encode($cred_temp);
 
 ?>
 
@@ -18,32 +19,34 @@ $logs   = empty($options['logs']) ? '' : (($options['logs']=='yes') ? 'checked' 
 	  <h1 class="wp-heading-inline">UpxForms</h1>
 	  <hr class="wp-header-end">
 	  
-	  <p>Gerenciamento de credencias. (<a href="<?= UPXFORMS_URL . 'docs'; ?>" target="_blank">Documentação</a>)</p>
+	  <p>Configure o id da planilha no Google Sheets e insira o conteúdo do arquivo JSON de credenciais.</p>
+	  
+	  <input type="hidden" name="upxforms_ctrl" value="1">
 	  
       <table class="form-table">
          <tbody>
 			
             <tr valign="top">
                <th scope="row" class="titledesc">
-                  <label for="upxforms_email">E-mail</label>
+                  <label for="upxforms_planilha">Planilha (ID)</label>
                </th>
 			   
                <td class="forminp">
                   <fieldset>
-                     <input class="widefield" type="text" name="planilha" id="planilha" value="<?= $planilha; ?>" placeholder="ID da planilha">
+                     <input class="widefield" type="text" name="upxforms_planilha" id="planilha" value="<?= $planilha; ?>" placeholder="ID da planilha">
                   </fieldset>
                </td>
             </tr>
 					
             <tr valign="top">
                <th scope="row" class="titledesc">
-                  <label for="woocommerce_pixpagseguro_description">Descrição <span class="woocommerce-help-tip"></span></label>
+                  <label for="upxforms_credenciais">Credenciais (JSON) <span class="upxforms-help-tip"></span></label>
                </th>
                
                <td class="forminp">
                   <fieldset>
                      <legend class="screen-reader-text"><span>Descrição</span></legend>
-                     <textarea class="widefield" rows="3" class="input-text wide-input " type="textarea" name="credenciais" id="credenciais" placeholder="Credenciais em formato JSON do arquivo gerado (credentials.json)."><?= $credenciais; ?></textarea>
+                     <textarea class="widefield" rows="6" class="input-text wide-input " type="textarea" name="upxforms_credenciais" id="credenciais" placeholder="Credenciais em formato JSON do arquivo gerado (credentials.json)."><?= $credenciais; ?></textarea>
                   </fieldset>
                </td>
             </tr>
@@ -56,7 +59,9 @@ $logs   = empty($options['logs']) ? '' : (($options['logs']=='yes') ? 'checked' 
                   <fieldset>
                      <label for="logs">
                      <input class="widefield" type="checkbox" name="upxforms_logs" id="upxforms_logs" style="" value="1" <?= $logs; ?>>Gravar logs de uso</label><br>
-                     <p class="description">Os logs ficam <a href="<?= UPXFORMS_URL . 'logs'; ?>" target="_blank">aqui</a>. Você também pode ler a documentação do plugin <a href="<?= UPXFORMS_URL . 'docs'; ?>" target="_blank">aqui</a>.</p>
+                     <p class="description">Consulte os logs <a href="<?= UPXFORMS_URL . 'logs'; ?>" target="_blank">aqui</a>.</p>
+                     <p class="description">Use essa mesma URL de logs para o redirecionamento do Google:</p>
+					 <p class="description"><?= UPXFORMS_URL . 'google'; ?></p>
                   </fieldset>
                </td>
             </tr>

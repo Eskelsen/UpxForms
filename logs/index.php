@@ -6,7 +6,7 @@
 define('UPXFORMS_LOG_CLEAR', (60*60*24)*180);
 
 # UpxForms Logs File
-define('UPXFORMS_LOG', __DIR__ . '/logs.txt');
+define('UPXFORMS_LOG_FILE', __DIR__ . '/logs.txt');
 
 ?>
 <!doctype html>
@@ -77,20 +77,15 @@ define('UPXFORMS_LOG', __DIR__ . '/logs.txt');
         -webkit-overflow-scrolling: touch;
       }
     </style>
-
-    
-    <!-- Custom styles for this template -->
-    <link href="form-validation.css" rel="stylesheet">
   </head>
   <body class="bg-light">
     
 <div class="container">
   <main>
 	<div class="py-5 text-center">
-		<img class="d-block mx-auto mb-4" src="../upxforms.webp" alt="" width="172">
+		<h1 style="font-size: 56px; padding: 18px">UPX Forms</h1>
 		<h2>Logs do Módulo</h2>
 		<p class="lead">Lista em ordem cronológica decrescente dos registros de log.</p>
-		<p class="lead">A documentação está <a href="../docs">aqui</a></p>
 		<a href=".">Atualizar</a>
 	</div>
 	<div class="row g-5">
@@ -101,7 +96,7 @@ define('UPXFORMS_LOG', __DIR__ . '/logs.txt');
 
 $limit 	= time() - UPXFORMS_LOG_CLEAR;
 $raw 	= [];
-$ctn 	= array_filter(explode("\r\n",file_get_contents(UPXFORMS_LOG)));
+$ctn 	= array_filter(explode("\r\n",file_get_contents(UPXFORMS_LOG_FILE)));
 
 foreach ($ctn as $line) {
 	$tmp = explode('|', $line);
@@ -111,7 +106,7 @@ foreach ($ctn as $line) {
 }
 
 $data = implode("\r\n",$raw) . "\r\n";
-file_put_contents(UPXFORMS_LOG, $data);
+file_put_contents(UPXFORMS_LOG_FILE, $data);
 
 $raw = array_reverse($raw);
 

@@ -5,26 +5,82 @@ ini_set('display_errors', true);
 ini_set('display_startup_erros', true);
 error_reporting(E_ALL);
 
+define('UPXFORMS_PATH',	__DIR__ . '/');
+define('UPXFORMS_INC', 	UPXFORMS_PATH . 'inc/');
+define('UPXFORMS_LOGS', 	UPXFORMS_PATH . 'logs/');
+define('UPXFORMS_LOG_FILE', UPXFORMS_LOGS . 'logs.txt');
+define('UPXFORMS_LOGS_ON', true);
+
 require __DIR__ . '/vendor/autoload.php';
+include __DIR__ . '/inc/cli_functions.php';
+include __DIR__ . '/inc/logs.php';
 include __DIR__ . '/inc/UpxForms.php';
 
 use Microframeworks\UpxForms;
-
-if (!empty($_GET['code'])) {
-	exit('Código: <input type="text" size="74" value="' . $_GET['code'] . '">');
-}
 
 if (php_sapi_name() != 'cli') {
     exit('This application must be run on the command line.');
 }
 
-echo 'Running...' . PHP_EOL;
+upx_log('UpxForms: cli linha de comando em execução...');
 
-$credentials = json_decode(file_get_contents(__DIR__ . '/data/credentials.json'), 1);
+$arg = $argv[1] ?? null;
 
-$callback = function($in){
-    file_put_contents(__DIR__ . '/data/token.json', $in);
-    return ($in) ? true : false;
-};
+if (empty($arg)) {
+	echo 'show: var dump em options' . PHP_EOL;
+	echo 'list: mostrar conteudo na planilha' . PHP_EOL;
+	echo 'insert: insere dados do mock na planilha' . PHP_EOL;
+	exit;
+}
 
-UpxForms::getAccessToken($credentials, $callback);
+$options = cli_get_options();
+
+if ($arg=='show') {
+	var_dump($options);
+	exit;
+}
+
+if (empty($options['planilha'])) {
+	upx_log_exit('Erro: ID de planilha ausente.');
+	
+}
+
+if (empty($options['credenciais'])) {
+	upx_log_exit('Erro: credenciais ausentes.');
+}
+
+if (empty($options['token'])) {
+	upx_log_exit('Erro: token ausente.');
+}
+
+$data = [
+	'credenciais' 	=> $options['credenciais'],
+	'token' 		=> $options['token'],
+	'saveToken' 	=> 'cli_set_options'
+];
+
+if ($arg=='insert') {
+	upx_log('Inserindo...');
+	$newRow = [
+		'1 Teste',
+		'2 Outro teste',
+		'3 https://image.tmdb.org/t/p/w500/bk8LyaMqUtaQ9hUShuvFznQYQKR.jpg',
+		"4 Alguma longa frase sobre alguma coisa.",
+		'5 123123123',
+		'6 São Paulo, SP',
+		date('Y-m-d H:i:s')
+	];
+	$rows = [$newRow];
+	$valueRange = UpxForms::valueRange();
+	$valueRange->setValues($rows);
+	$googleOptions = ['valueInputOption' => 'USER_ENTERED'];
+	UpxForms::insertRows($options['planilha'], 'Sheet1', $valueRange, $googleOptions, $data);
+	exit;
+}
+
+if ($arg=='list') {
+	upx_log('Listando...');
+	$u = UpxForms::getAll($options['planilha'], 'Sheet1', $data);
+	var_dump($u);
+	exit;
+}

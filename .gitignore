@@ -1,7 +1,10 @@
 composer.phar
+
 /vendor/
 
-/data/
+glob.php
+zipfy.php
 
-credentials.json
-token.json
+*.json
+*.txt
+*.zip

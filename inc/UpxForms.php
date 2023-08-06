@@ -3,6 +3,7 @@
 # Google Sheets Class
 
 namespace Microframeworks;
+
 class UpxForms {
 	
 	public static function valueRange()
@@ -10,9 +11,9 @@ class UpxForms {
 		return new \Google\Service\Sheets\ValueRange();
 	}
 
-	private static function newClient($credentials)
+	private static function newClient($credenciais)
 	{
-		if (empty($credentials)) {
+		if (empty($credenciais)) {
 			self::log('Credenciais ausentes.', 1);
 			exit;
 		}
@@ -20,24 +21,24 @@ class UpxForms {
 		$client = new \Google\Client();
 		$client->setApplicationName('Google Sheets API PHP Quickstart');
 		$client->setScopes('https://www.googleapis.com/auth/spreadsheets');
-		$client->setAuthConfig($credentials);
+		$client->setAuthConfig($credenciais);
 		$client->setAccessType('offline');
 		$client->setPrompt('select_account consent');
 		return $client;
 	}
 
-	public static function getAccessToken(Array $credentials, Callable $saveToken) : bool
+	public static function getAccessToken(Array $options, Callable $saveToken) : bool
 	{
 		if (php_sapi_name()!='cli') {
 			self::log('Acesso negado. A configuracao deve ser feita pelo modo cli.', 1);
 			return false;
 		}
 
-		$client = self::newClient($credentials);
+		$client = self::newClient($options['credenciais']);
 
 		$authUrl = $client->createAuthUrl();
 		
-		echo "Abra o seguinte link em seu navegador:\n\n" . $authUrl;
+		echo "Abra o seguinte link em seu navegador:\n\n" . $authUrl . "\n\n";
 		echo 'Introduza o codigo de verificacao: ';
 		$authCode = trim(fgets(STDIN));
 
@@ -48,28 +49,31 @@ class UpxForms {
 			self::log('Mensagem: ' . implode(', ', $accessToken), 1);
 			return false;
 		}
+		
+		$options['token'] = $client->getAccessToken();
 
-        return call_user_func($saveToken, json_encode($client->getAccessToken()));
+        return call_user_func($saveToken, $options);
 	}
 	
-	public static function getClient($data)
+	public static function getClient($options)
 	{
-		$client = self::newClient($data['credentials']);
+		$client = self::newClient($options['credenciais']);
 
-		if (empty($data['token'])) {
+		if (empty($options['token'])) {
 			self::log('Token ausente.', 1);
 			return false;
 		}
 
-		$client->setAccessToken($data['token']);
+		$client->setAccessToken($options['token']);
 
 		if ($client->isAccessTokenExpired()) {
 			if ($client->getRefreshToken()) {
 				$client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-				if (empty($data['saveToken'])) {
+				if (empty($options['saveToken'])) {
 					self::saveToken(json_encode($client->getAccessToken()));
 				} else {
-					call_user_func($data['saveToken'], json_encode($client->getAccessToken()));
+					$options['token'] = $client->getAccessToken();
+					return call_user_func($options['saveToken'], $client->getAccessToken());
 				}
 			} else {
 				self::log('Nao foi possivel renovar o token de acesso, a configuracao deve ser feita pelo modo cli.', 1);
@@ -79,9 +83,9 @@ class UpxForms {
 		return $client;
 	}
 
-	public function updateValues($spreadsheetId, $range, $valueInputOption, $values, $data)
+	public function updateValues($spreadsheetId, $range, $valueInputOption, $values, $options)
 	{
-		$client = self::getClient($data);
+		$client = self::getClient($options);
 
 		if (!$client) {
 			exit('Falha ao iniciar app' . PHP_EOL);
@@ -113,7 +117,7 @@ class UpxForms {
 			return $result;
 		}
 		catch(\Exception $e) {
-			self::log('Mensagem: ' .$e->getMessage(), 1);
+			self::log('Mensagem: ' . $e->getMessage(), 1);
 			return false;
 		}
 	}
@@ -127,7 +131,7 @@ class UpxForms {
 			return $response->getValues();
 		}
 		catch(\Exception $e) {
-			self::log('Mensagem: ' .$e->getMessage(), 1);
+			self::log('Mensagem: ' . $e->getMessage(), 1);
 			return false;
 		}
 	}
@@ -147,12 +151,10 @@ class UpxForms {
 	public static function log($msg, $log = false)
 	{
 		if ($log) {
-			$arquivo = dirname(__DIR__, 1) . '/data/log.txt';
-			if (!is_file($arquivo)) {
-				file_put_contents($arquivo, '');
-				chmod($arquivo, 0777);
+			if (UPXFORMS_LOGS_ON) {
+				$data = time() . '|' . date('Y-m-d H:i:s') . '|' . $msg . "\r\n";
+				file_put_contents(UPXFORMS_LOG_FILE, $data, FILE_APPEND);
 			}
-			file_put_contents($arquivo, $msg . "\n", FILE_APPEND);
 		}
 		if (php_sapi_name()=='cli') {
 			echo $msg . PHP_EOL;

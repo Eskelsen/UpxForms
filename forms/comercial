@@ -1,0 +1,13 @@
+<form id="regForm" action="" method="post">
+    <p><input class="upxforms-text-input" placeholder="Nome completo*" name="nome" required></p>
+    <p><input class="upxforms-text-input" placeholder="Razão Social*" name="rsocial" required></p>
+    <p><input class="upxforms-text-input" placeholder="CNPJ*" name="cnpj" required></p>
+    <p><input class="upxforms-text-input" placeholder="Telefone*" name="phone" required></p>
+    <p><input class="upxforms-text-input" placeholder="E-mail*" name="email" required></p>
+	<p><textarea class="upxforms-text-input" name="mensagem" placeholder="Mensagem"></textarea></p>
+  <div style="overflow:auto;">
+    <div style="text-align:center;margin-top:10px;">
+      <input type="submit" id="nextBtn" class="upxforms-button" onclick="sendData()" value="Enviar">
+    </div>
+  </div>
+</form>
