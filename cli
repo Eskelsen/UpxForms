@@ -36,7 +36,7 @@ if (empty($arg)) {
 $options = cli_get_options();
 
 if ($arg=='show') {
-	// cli_set_options(['planilha' => 'planilha']);
+	// cli_set_options(['planilha' => 'planilha']); // limpar dados
 	var_dump($options);
 	exit;
 }
@@ -57,12 +57,12 @@ if (empty($options['token'])) {
 if ($arg=='insert') {
 	upx_log('Inserindo...');
 	$newRow = [
-		'1 Teste',
-		'2 Outro teste',
-		'3 https://image.tmdb.org/t/p/w500/bk8LyaMqUtaQ9hUShuvFznQYQKR.jpg',
-		"4 Alguma longa frase sobre alguma coisa.",
-		'5 123123123',
-		'6 São Paulo, SP',
+		'Teste',
+		'Outro teste',
+		'https://image.tmdb.org/t/p/w500/bQY.jpg',
+		"Alguma longa frase sobre alguma coisa.",
+		'123123123',
+		'São Paulo, SP',
 		date('Y-m-d H:i:s')
 	];
 	$rows = [$newRow];

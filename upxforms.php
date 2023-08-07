@@ -134,6 +134,18 @@ const url_base = "' . $endpoint . '";
 
 const form = document.getElementById("regForm");
 
+const cnpj = document.getElementsByName("cnpj")[0];
+
+if (cnpj) {
+	cnpj.addEventListener("keyup", (e) => cnpj.value = docMask(e.target.value));
+}
+
+const phone = document.getElementsByName("phone")[0];
+
+if (phone) {
+	phone.addEventListener("keyup", (e) => phone.value = phoneMask(e.target.value));
+}
+
 function sendData(){
 
 	if (!form.checkValidity()) {
@@ -160,9 +172,17 @@ function sendData(){
 	
 	email = email.trim();
 	
+	// if (!mailValidate(email)) {
+		// ...
+	// }
+
 	let phone = document.getElementsByName("phone")[0].value;
 	
-	phone = phone.replace(/\D/g, "");
+	// phone = phone.replace(/\D/g, "");
+	
+	// if (!validaCelular(phone.replace(/\D/g, ""))) {
+		// ...
+	// }
 	
 	let mensagem = document.getElementsByName("mensagem")[0].value;
 	
@@ -196,6 +216,68 @@ function sendData(){
 function treatReturn(data){
 	console.log("treatReturn");
 	console.log(data);
+}
+
+function docMask(value){
+	value = value.replace(/\D/g, "");
+	value = value.substring(0,14);
+    let size = value.length;
+    if (size<=2) {
+        return value;
+    } else if (size<=6) {
+        return value.replace(/^(\d{3})(\d)/g, "$1.$2")
+    } else if (size<=9) {
+        return value.replace(/^(\d{3})(\d{3})(\d)/g, "$1.$2.$3")
+    } else if (size<=12) {
+        return value.replace(/^(\d{3})(\d{3})(\d{3})(\d)/g, "$1.$2.$3-$4")
+    } else if (size>12) {
+        return value.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d)/g, "$1.$2.$3/$4-$5");
+    }
+}
+
+function phoneMask(value){
+	value = value.replace(/\D/g, "");
+	value = value.substring(0,11);
+    let size = value.length;
+    if (size<=6) {
+        return value.replace(/^(\d{2})(\d)/g, "($1) $2");
+    } else if (size<=10) {
+        return value.replace(/^(\d{2})(\d{4})(\d)/g, "($1) $2-$3");
+    } else if (size>=11) {
+        return value.replace(/^(\d{2})(\d{5})(\d{4})/g, "($1) $2-$3");
+    }
+}
+
+function validaCelular(telefone) {
+
+    telefone = telefone.replace(/\D/g, "");
+    
+    if (!(telefone.length >= 10 && telefone.length <= 11)) return false;
+    
+    if (telefone.length == 11 && parseInt(telefone.substring(2, 3)) != 9) return false;
+    
+    for (var n = 0; n < 10; n++) {
+        if (telefone == new Array(11).join(n) || telefone == new Array(12).join(n)) return false;
+    }
+    
+    var codigosDDD = [11, 12, 13, 14, 15, 16, 17, 18, 19,
+        21, 22, 24, 27, 28, 31, 32, 33, 34,
+        35, 37, 38, 41, 42, 43, 44, 45, 46,
+        47, 48, 49, 51, 53, 54, 55, 61, 62,
+        64, 63, 65, 66, 67, 68, 69, 71, 73,
+        74, 75, 77, 79, 81, 82, 83, 84, 85,
+        86, 87, 88, 89, 91, 92, 93, 94, 95,
+        96, 97, 98, 99];
+        
+    if (codigosDDD.indexOf(parseInt(telefone.substring(0, 2))) == -1) return false;
+    if (telefone.length == 10 && [2, 3, 4, 5, 7].indexOf(parseInt(telefone.substring(2, 3))) == -1) return false;
+
+    return telefone;
+}
+
+function mailValidate(value){
+	let re = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+	return re.test(value);
 }
 
 </script>

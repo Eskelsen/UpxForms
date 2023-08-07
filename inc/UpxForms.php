@@ -80,10 +80,11 @@ class UpxForms {
 				exit;
 			}
 		}
+		
 		return $client;
 	}
 
-	public function updateValues($spreadsheetId, $range, $valueInputOption, $values, $options)
+	public function updateValues($spreadsheetId, $range, $valueInputOption, $values, $options, $saveToken)
 	{
 		$client = self::getClient($data, $saveToken);
 
