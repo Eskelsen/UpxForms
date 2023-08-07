@@ -55,13 +55,13 @@ class UpxForms {
         return call_user_func($saveToken, $options);
 	}
 	
-	public static function getClient($options)
+	public static function getClient($options, $saveToken = false)
 	{
 		$client = self::newClient($options['credenciais']);
 
 		if (empty($options['token'])) {
 			self::log('Token ausente.', 1);
-			return false;
+			exit;
 		}
 
 		$client->setAccessToken($options['token']);
@@ -69,15 +69,15 @@ class UpxForms {
 		if ($client->isAccessTokenExpired()) {
 			if ($client->getRefreshToken()) {
 				$client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-				if (empty($options['saveToken'])) {
-					self::saveToken(json_encode($client->getAccessToken()));
-				} else {
+				if ($saveToken) {
 					$options['token'] = $client->getAccessToken();
-					return call_user_func($options['saveToken'], $client->getAccessToken());
+					call_user_func($saveToken, $options);
+				} else {
+					self::saveToken(json_encode($client->getAccessToken()));
 				}
 			} else {
 				self::log('Nao foi possivel renovar o token de acesso, a configuracao deve ser feita pelo modo cli.', 1);
-				return false;
+				exit;
 			}
 		}
 		return $client;
@@ -85,7 +85,7 @@ class UpxForms {
 
 	public function updateValues($spreadsheetId, $range, $valueInputOption, $values, $options)
 	{
-		$client = self::getClient($options);
+		$client = self::getClient($data, $saveToken);
 
 		if (!$client) {
 			exit('Falha ao iniciar app' . PHP_EOL);
@@ -107,9 +107,9 @@ class UpxForms {
 		}
 	}
 
-	public static function insertRows($spreadsheetId, $range, $valueRange, $options, $data)
+	public static function insertRows($spreadsheetId, $range, $valueRange, $options, $data, $saveToken)
 	{
-		$client = self::getClient($data);
+		$client = self::getClient($data, $saveToken);
 		$service = new \Google\Service\Sheets($client);
 		try{
 			$result = $service->spreadsheets_values->append($spreadsheetId, $range, $valueRange, $options);
@@ -122,9 +122,9 @@ class UpxForms {
 		}
 	}
 
-	public static function getAll($spreadsheetId, $range, $data)
+	public static function getAll($spreadsheetId, $range, $data, $saveToken)
 	{
-		$client = self::getClient($data);
+		$client = self::getClient($data, $saveToken);
 		$service = new \Google\Service\Sheets($client);
 		try{
 			$response = $service->spreadsheets_values->get($spreadsheetId, $range);

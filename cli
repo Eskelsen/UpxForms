@@ -36,6 +36,7 @@ if (empty($arg)) {
 $options = cli_get_options();
 
 if ($arg=='show') {
+	// cli_set_options(['planilha' => 'planilha']);
 	var_dump($options);
 	exit;
 }
@@ -53,12 +54,6 @@ if (empty($options['token'])) {
 	upx_log_exit('Erro: token ausente.');
 }
 
-$data = [
-	'credenciais' 	=> $options['credenciais'],
-	'token' 		=> $options['token'],
-	'saveToken' 	=> 'cli_set_options'
-];
-
 if ($arg=='insert') {
 	upx_log('Inserindo...');
 	$newRow = [
@@ -74,13 +69,13 @@ if ($arg=='insert') {
 	$valueRange = UpxForms::valueRange();
 	$valueRange->setValues($rows);
 	$googleOptions = ['valueInputOption' => 'USER_ENTERED'];
-	UpxForms::insertRows($options['planilha'], 'Sheet1', $valueRange, $googleOptions, $data);
+	UpxForms::insertRows($options['planilha'], 'Sheet1', $valueRange, $googleOptions, $options, 'cli_set_options');
 	exit;
 }
 
 if ($arg=='list') {
 	upx_log('Listando...');
-	$u = UpxForms::getAll($options['planilha'], 'Sheet1', $data);
+	$u = UpxForms::getAll($options['planilha'], 'Sheet1', $options, 'cli_set_options');
 	var_dump($u);
 	exit;
 }

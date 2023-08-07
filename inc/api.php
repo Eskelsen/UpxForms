@@ -37,16 +37,10 @@ if (empty($options['token'])) {
 	upx_log_exit('Erro: token ausente.');
 }
 
-$data = [
-	'credenciais' 	=> $options['credenciais'],
-	'token' 		=> $options['token'],
-	'saveToken' 	=> 'cli_set_options'
-];
-
 $rows = [array_values($form)];
 $valueRange = UpxForms::valueRange();
 $valueRange->setValues($rows);
 $googleOptions = ['valueInputOption' => 'USER_ENTERED'];
-$u = UpxForms::insertRows($options['planilha'], 'Sheet1', $valueRange, $googleOptions, $data);
+$u = UpxForms::insertRows($options['planilha'], 'Sheet1', $valueRange, $googleOptions, $options, 'cli_set_options');
 	
 exit(json_encode(['status' => true, 'msg' => 'Mensagem enviada com sucesso', 'u' => $u], JSON_PRETTY_PRINT));
