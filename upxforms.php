@@ -137,13 +137,13 @@ const form = document.getElementById("regForm");
 const cnpj = document.getElementsByName("cnpj")[0];
 
 if (cnpj) {
-	cnpj.addEventListener("keyup", (e) => cnpj.value = docMask(e.target.value));
+	cnpj.addEventListener("input", (e) => cnpj.value = docMask(e.target.value));
 }
 
 const phone = document.getElementsByName("phone")[0];
 
 if (phone) {
-	phone.addEventListener("keyup", (e) => phone.value = phoneMask(e.target.value));
+	phone.addEventListener("input", (e) => phone.value = phoneMask(e.target.value));
 }
 
 function sendData(){
