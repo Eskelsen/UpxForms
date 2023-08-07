@@ -10,6 +10,7 @@ error_reporting(E_ALL);
 # Includes
 require dirname(__DIR__, 1) . '/vendor/autoload.php';
 include dirname(__DIR__, 1) . '/inc/UpxForms.php';
+include dirname(__DIR__, 1) . '/inc/cli_functions.php';
 
 use Microframeworks\UpxForms;
 
