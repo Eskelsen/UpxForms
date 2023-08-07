@@ -55,7 +55,9 @@ if (empty($options['token'])) {
 }
 
 if ($arg=='insert') {
+	
 	upx_log('Inserindo...');
+	
 	$newRow = [
 		'Teste',
 		'Outro teste',
@@ -65,17 +67,22 @@ if ($arg=='insert') {
 		'São Paulo, SP',
 		date('Y-m-d H:i:s')
 	];
+	
 	$rows = [$newRow];
 	$valueRange = UpxForms::valueRange();
 	$valueRange->setValues($rows);
 	$googleOptions = ['valueInputOption' => 'USER_ENTERED'];
 	UpxForms::insertRows($options['planilha'], 'Sheet1', $valueRange, $googleOptions, $options, 'cli_set_options');
+	
 	exit;
 }
 
 if ($arg=='list') {
+	
 	upx_log('Listando...');
+	
 	$u = UpxForms::getAll($options['planilha'], 'Sheet1', $options, 'cli_set_options');
 	var_dump($u);
+	
 	exit;
 }
