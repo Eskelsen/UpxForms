@@ -17,3 +17,13 @@ function cli_set_options($options){
 	$u = shell_exec($cmd);
 	return true;
 }
+
+function cli_get_options_api($options_name){
+	// ...
+	return unserialize(trim($serial));
+}
+
+function cli_set_options_api($options){
+	// ...
+	return true;
+}

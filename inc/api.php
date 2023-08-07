@@ -20,7 +20,6 @@ $form	 = json_decode($content, 1);
 
 if (empty($form)) {
 	upx_log_exit('Erro: sem dados de formulário.');
-	
 }
 
 $options = get_option('upxforms_api_settings');

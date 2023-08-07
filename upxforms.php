@@ -115,6 +115,21 @@ function upxforms_api_route() {
 
 add_action( 'rest_api_init', 'upxforms_api_route' );
 
+# API Cli
+function upxforms_api_cli_inc() {
+    include UPXFORMS_INC . 'api_cli.php';
+}
+
+function upxforms_api_cli_route() {
+    register_rest_route( 'upxforms/v1', '/cli', array(
+        'methods'  => ['GET', 'POST'], 
+        'callback' => 'upxforms_api_cli_inc',
+		'permission_callback' => '__return_true'
+    ) );
+}
+
+add_action( 'rest_api_init', 'upxforms_api_cli_route' );
+
 # Uninstall
 function uninstall_upxforms(){
 	delete_options('upxforms_api_settings');
