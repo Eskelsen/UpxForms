@@ -10,7 +10,9 @@ error_reporting(E_ALL);
 # Includes
 require dirname(__DIR__, 1) . '/vendor/autoload.php';
 include dirname(__DIR__, 1) . '/inc/UpxForms.php';
-include dirname(__DIR__, 1) . '/inc/cli_functions.php';
+
+# WP Core
+include dirname(__DIR__, 3) . '/wp-config.php';
 
 use Microframeworks\UpxForms;
 
@@ -41,6 +43,6 @@ $rows = [array_values($form)];
 $valueRange = UpxForms::valueRange();
 $valueRange->setValues($rows);
 $googleOptions = ['valueInputOption' => 'USER_ENTERED'];
-$u = UpxForms::insertRows($options['planilha'], 'Sheet1', $valueRange, $googleOptions, $options, 'cli_set_options');
+$u = UpxForms::insertRows($options['planilha'], 'Sheet1', $valueRange, $googleOptions, $options, 'update_option');
 	
 exit(json_encode(['status' => true, 'msg' => 'Mensagem enviada com sucesso', 'u' => $u], JSON_PRETTY_PRINT));

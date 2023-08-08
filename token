@@ -5,16 +5,20 @@ ini_set('display_errors', true);
 ini_set('display_startup_erros', true);
 error_reporting(E_ALL);
 
+# Constants
 define('UPXFORMS_PATH',	__DIR__ . '/');
-define('UPXFORMS_INC', 	UPXFORMS_PATH . 'inc/');
-define('UPXFORMS_LOGS', 	UPXFORMS_PATH . 'logs/');
+define('UPXFORMS_INC', UPXFORMS_PATH . 'inc/');
+define('UPXFORMS_LOGS',	UPXFORMS_PATH . 'logs/');
 define('UPXFORMS_LOG_FILE', UPXFORMS_LOGS . 'logs.txt');
 define('UPXFORMS_LOGS_ON', true);
 
+# Includes
 require __DIR__ . '/vendor/autoload.php';
-include __DIR__ . '/inc/cli_functions.php';
 include __DIR__ . '/inc/logs.php';
 include __DIR__ . '/inc/UpxForms.php';
+
+# WP Core
+include dirname(__DIR__, 3) . '/wp-config.php';
 
 use Microframeworks\UpxForms;
 
@@ -24,9 +28,7 @@ if (php_sapi_name() != 'cli') {
 
 upx_log('UpxForms: token linha de comando em execução...');
 
-$options = cli_get_options();
-
-
+$options = get_option('upxforms_api_settings');
 
 if (empty($options['planilha'])) {
 	upx_log_exit('Erro: ID de planilha ausente.');
@@ -37,4 +39,4 @@ if (empty($options['credenciais'])) {
 	upx_log_exit('Erro: credenciais ausentes.');
 }
 
-UpxForms::getAccessToken($options, 'cli_set_options');
+UpxForms::getAccessToken($options, 'update_option');

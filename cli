@@ -5,16 +5,20 @@ ini_set('display_errors', true);
 ini_set('display_startup_erros', true);
 error_reporting(E_ALL);
 
+# Constants
 define('UPXFORMS_PATH',	__DIR__ . '/');
-define('UPXFORMS_INC', 	UPXFORMS_PATH . 'inc/');
-define('UPXFORMS_LOGS', 	UPXFORMS_PATH . 'logs/');
+define('UPXFORMS_INC', UPXFORMS_PATH . 'inc/');
+define('UPXFORMS_LOGS',	UPXFORMS_PATH . 'logs/');
 define('UPXFORMS_LOG_FILE', UPXFORMS_LOGS . 'logs.txt');
 define('UPXFORMS_LOGS_ON', true);
 
+# Includes
 require __DIR__ . '/vendor/autoload.php';
-include __DIR__ . '/inc/cli_functions.php';
 include __DIR__ . '/inc/logs.php';
 include __DIR__ . '/inc/UpxForms.php';
+
+# WP Core
+include dirname(__DIR__, 3) . '/wp-config.php';
 
 use Microframeworks\UpxForms;
 
@@ -56,7 +60,7 @@ if (empty($options['token'])) {
 
 if ($arg=='insert') {
 	
-	upx_log('Inserindo...');
+	upx_log('Inserindo mock de teste...');
 	
 	$newRow = [
 		'Teste',
@@ -72,7 +76,7 @@ if ($arg=='insert') {
 	$valueRange = UpxForms::valueRange();
 	$valueRange->setValues($rows);
 	$googleOptions = ['valueInputOption' => 'USER_ENTERED'];
-	UpxForms::insertRows($options['planilha'], 'Sheet1', $valueRange, $googleOptions, $options, 'cli_set_options');
+	UpxForms::insertRows($options['planilha'], 'Sheet1', $valueRange, $googleOptions, $options, 'update_option');
 	
 	exit;
 }
@@ -81,7 +85,7 @@ if ($arg=='list') {
 	
 	upx_log('Listando...');
 	
-	$u = UpxForms::getAll($options['planilha'], 'Sheet1', $options, 'cli_set_options');
+	$u = UpxForms::getAll($options['planilha'], 'Sheet1', $options, 'update_option');
 	var_dump($u);
 	
 	exit;
