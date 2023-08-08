@@ -40,7 +40,7 @@ if (empty($arg)) {
 $options = get_option('upxforms_api_settings');
 
 if ($arg=='show') {
-	// cli_set_options(['planilha' => 'planilha']); // limpar dados
+	update_option('upxforms_api_settings', ['planilha' => 'planilha']); // limpar dados
 	var_dump($options);
 	exit;
 }
