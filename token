@@ -39,4 +39,8 @@ if (empty($options['credenciais'])) {
 	upx_log_exit('Erro: credenciais ausentes.');
 }
 
-UpxForms::getAccessToken($options, 'update_option');
+$callback = function($options){
+	update_option('upxforms_api_settings', $options);
+}
+
+UpxForms::getAccessToken($options, $callback);

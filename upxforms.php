@@ -115,21 +115,6 @@ function upxforms_api_route() {
 
 add_action( 'rest_api_init', 'upxforms_api_route' );
 
-# API Cli
-function upxforms_api_cli_inc() {
-    include UPXFORMS_INC . 'api_cli.php';
-}
-
-function upxforms_api_cli_route() {
-    register_rest_route( 'upxforms/v1', '/cli', array(
-        'methods'  => ['GET', 'POST'], 
-        'callback' => 'upxforms_api_cli_inc',
-		'permission_callback' => '__return_true'
-    ) );
-}
-
-add_action( 'rest_api_init', 'upxforms_api_cli_route' );
-
 # Uninstall
 function uninstall_upxforms(){
 	delete_options('upxforms_api_settings');
@@ -146,6 +131,7 @@ function upxformsToolkitCode(){
 <script type="text/javascript">
 
 const url_base = "' . $endpoint . '";
+const time = "' . time() . '";
 
 const form = document.getElementById("regForm");
 
@@ -204,22 +190,20 @@ function sendData(){
 	mensagem = mensagem.trim();
 	
 	let data = { 
-		Sender:		"tbf-lebbe-form",
-
 		nome:		nome,
 		rsocial:	rsocial,
 		cnpj:		cnpj,
 		email:		email,
 		phone:		phone,
 		mensagem:	mensagem,
-		// sec:	sec
+		time: 		time
 	};
 	
 	fetch(url_base, {
 	  method: "POST",
 	  body: JSON.stringify(data),
 	})
-	.then((response) => response.text())
+	.then((response) => response.json())
 	.then((data) => {
 		treatReturn(data);
 	  })
@@ -228,9 +212,25 @@ function sendData(){
 	});
 }
 
-function treatReturn(data){
-	console.log("treatReturn");
-	console.log(data);
+function treatReturn(resposta){
+	console.log(resposta);
+	let iframe = document.getElementById("upxforms_frame");
+	if (resposta) {
+		if ("status" in resposta) {
+		  if (resposta.status) {
+			  iframe.innerHTML = "<center><br><br><h2>Mensagem enviada!</h2><img src=\"' . UPXFORMS_URL . 'check.png\" width=\"180\"><br><h2>Muito obrigado!</h2><br><br></center>";
+			  console.log("Sucesso!");
+			  return;
+		  } else {
+			  console.log("Algum problema ocorreu.");
+		  }
+		} else {
+		  console.log("Status indisponível.");
+		}
+	} else {
+		console.log("Resposta indisponível.");
+	}
+	iframe.innerHTML = "<center><br><br><h2>Falha ao enviar!</h2><img src=\"' . UPXFORMS_URL . 'fail.png\" width=\"180\"><br><h2>Entre em contato conosco!</h2><br><br></center>";
 }
 
 function docMask(value){
@@ -313,7 +313,7 @@ function upxforms_shortcode($atts) {
 
     if (file_exists($file)) {
 		add_action('wp_footer', 'upxformsToolkitCode');
-        $html = file_get_contents($file);
+        $html = '<div id="upxforms_frame">' . file_get_contents($file) . '</div>';
     }
 
     return $html;
