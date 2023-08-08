@@ -1,5 +1,7 @@
 <?php
 
+# UpxForms Install Cli
+
 # Dev Mode: Show Errors
 ini_set('display_errors', true);
 ini_set('display_startup_erros', true);
@@ -41,6 +43,6 @@ if (empty($options['credenciais'])) {
 
 $callback = function($options){
 	update_option('upxforms_api_settings', $options);
-}
+};
 
 UpxForms::getAccessToken($options, $callback);

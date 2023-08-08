@@ -60,7 +60,7 @@ if (empty($options['token'])) {
 
 $callback = function($options){
 	update_option('upxforms_api_settings', $options);
-}
+};
 
 if ($arg=='insert') {
 	

@@ -60,8 +60,8 @@ $credenciais = empty($cred_temp) ? '' : json_encode($cred_temp);
                      <label for="logs">
                      <input class="widefield" type="checkbox" name="upxforms_logs" id="upxforms_logs" style="" value="1" <?= $logs; ?>>Gravar logs de uso</label><br>
                      <p class="description">Consulte os logs <a href="<?= UPXFORMS_URL . 'logs'; ?>" target="_blank">aqui</a>.</p>
-                     <p class="description">Use essa mesma URL de logs para o redirecionamento do Google:</p>
-					 <p class="description"><?= UPXFORMS_URL . 'google'; ?></p>
+                     <p class="description">Use a URL abaixo para o redirecionamento do Google e pra configurar o token:</p>
+					      <p class="description"><a href="<?= UPXFORMS_URL . 'google'; ?>" target="_blank"><?= UPXFORMS_URL . 'google'; ?></p>
                   </fieldset>
                </td>
             </tr>
