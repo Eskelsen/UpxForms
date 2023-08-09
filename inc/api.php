@@ -52,10 +52,18 @@ $callback = function($options){
 	update_option('upxforms_api_settings', $options);
 };
 
+$status = true;
+$msg = 'Mensagem enviada com sucesso';
 $rows = [array_values($form)];
 $valueRange = UpxForms::valueRange();
 $valueRange->setValues($rows);
 $googleOptions = ['valueInputOption' => 'USER_ENTERED'];
-$u = UpxForms::insertRows($options['planilha'], 'Sheet1', $valueRange, $googleOptions, $options, $callback);
-	
-exit(json_encode(['status' => true, 'msg' => 'Mensagem enviada com sucesso', 'u' => $u], JSON_PRETTY_PRINT));
+$result = UpxForms::insertRows($options['planilha'], 'Sheet1', $valueRange, $googleOptions, $options, $callback);
+
+if (!$result) {
+	UpxForms::saveData($rows, time() . '.json');
+	$status = false;
+	$msg = 'Algum problema aconteceu. Mensagem salva em backup.';
+}
+
+exit(json_encode(['status' => $status, 'msg' => $msg, 'result' => $result], JSON_PRETTY_PRINT));

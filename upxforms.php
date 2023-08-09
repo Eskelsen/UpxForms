@@ -154,7 +154,7 @@ function sendData(){
 		return;
 	}
 	
-	console.log("valido");
+	console.log("Formulário válido");
 	event.preventDefault();
 	
 	let nome = document.getElementsByName("nome")[0].value;
@@ -203,9 +203,13 @@ function sendData(){
 	  method: "POST",
 	  body: JSON.stringify(data),
 	})
-	.then((response) => response.json())
+	.then((response) => response.text())
 	.then((data) => {
-		treatReturn(data);
+		console.log(data);
+		return JSON.parse(data);
+	})
+	.then((json) => {
+		treatReturn(json);
 	  })
 	  .catch((error) => {
 		console.error("Error:", error);

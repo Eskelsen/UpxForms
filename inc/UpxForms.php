@@ -139,13 +139,18 @@ class UpxForms {
 	
 	public static function saveToken($in)
 	{
-		$token = is_string($in) ? $in : json_encode($in);
-		$arquivo = dirname(__DIR__, 1) . '/data/token.json';
+		return self::saveData($in, 'token.json');
+	}
+
+	public static function saveData($in, $filename)
+	{
+		$data = is_string($in) ? $in : json_encode($in);
+		$arquivo = dirname(__DIR__, 1) . '/data/' . $filename;
 		if (!is_file($arquivo)) {
 			file_put_contents($arquivo, '');
 			chmod($arquivo, 0777);
 		}
-		$u = file_put_contents($arquivo, $token);
+		$u = file_put_contents($arquivo, $data);
 		return ($u) ? true : false;
 	}
 
